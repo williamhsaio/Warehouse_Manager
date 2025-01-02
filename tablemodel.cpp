@@ -48,6 +48,11 @@ TableModel::Errors TableModel::updateStock(const string &name, int stock){
     if(it != m_table.end()){
         int currStock = (*it)->getStock();
         (*it)->setStock(currStock + stock);
+
+        QModelIndex topLeft = index( 0, 0 );
+        QModelIndex bottomRight = index(rowCount()-1, columnCount()-1 );
+
+        emit dataChanged(topLeft, bottomRight);
         return Errors::SUCCESS;
     }
     else{
@@ -74,6 +79,11 @@ TableModel::Errors TableModel::updateSold(const string &name, int sold){
 
         int currSold = (*it)->getSold();
         (*it)->setSold(currSold + sold);
+
+        QModelIndex topLeft = index( 0, 0 );
+        QModelIndex bottomRight = index(rowCount()-1, columnCount()-1 );
+
+        emit dataChanged(topLeft, bottomRight);
         return Errors::SUCCESS;
     }
     else{
@@ -91,7 +101,7 @@ TableModel::Errors TableModel::addProduct(const string &name, const string &loca
         return Errors::FAIL_TO_ADD;
     }
     else{
-        beginInsertColumns(QModelIndex(), rowCount(), rowCount());
+        beginInsertRows(QModelIndex(), rowCount(), rowCount());
         Product *p = new Product(name, location, stock, sold);
         if(p->getSold() < p->getStock()){
             m_table.push_back(p);

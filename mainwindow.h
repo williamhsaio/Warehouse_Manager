@@ -25,10 +25,15 @@ public:
     void createTableView();
     QVBoxLayout* createAddLayout();
     QVBoxLayout* createRemoveLayout();
+    QVBoxLayout* createUpStockLayout();
+    QVBoxLayout* createUpSoldLayout();
 
 private slots:
     void handleAddButtonClicked();
     void handleRemoveButtonClicked();
+    void handleUpStockButtonClicked();
+    void handleUpSoldButtonClicked();
+
 private:
     Ui::MainWindow *ui;
     QTableView *tableView;
@@ -40,9 +45,14 @@ private:
     QLineEdit *stockLineEdit;
     QLineEdit *soldLineEdit;
     QLineEdit *nameUpStockEdit;
-    QlineEdit *nameUpSoldEdit;
+    QLineEdit *stockUpStockEdit;
+    QLineEdit *nameUpSoldEdit;
+    QLineEdit *soldUpSoldEdit;
+
     QPushButton *addButton;
     QPushButton *removeButton;
+    QPushButton *upStockButton;
+    QPushButton *upSoldButton;
 
 };
 #endif // MAINWINDOW_H

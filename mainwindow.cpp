@@ -31,12 +31,20 @@ MainWindow::MainWindow(QWidget *parent)
     QVBoxLayout *remove_form = createRemoveLayout();
     text_layout->addLayout(remove_form);
 
+    QVBoxLayout *update_stock_form = createUpStockLayout();
+    text_layout->addLayout(update_stock_form);
+
+    QVBoxLayout *update_sold_form = createUpSoldLayout();
+    text_layout->addLayout(update_sold_form);
+
     m_layout->addLayout(text_layout);
 
     ui->centralwidget->setLayout(m_layout);
 
     connect(addButton, &QPushButton::clicked, this, &MainWindow::handleAddButtonClicked);
     connect(removeButton, &QPushButton::clicked, this, &MainWindow::handleRemoveButtonClicked);
+    connect(upStockButton, &QPushButton::clicked, this, &MainWindow::handleUpStockButtonClicked);
+    connect(upSoldButton, &QPushButton::clicked, this, &MainWindow::handleUpSoldButtonClicked);
 }
 
 MainWindow::~MainWindow()
@@ -54,6 +62,18 @@ void MainWindow::handleAddButtonClicked(){
 void MainWindow::handleRemoveButtonClicked(){
     const auto name = nameRemoveEdit->text().toStdString();
     tableModel->removeProduct(name);
+}
+
+void MainWindow::handleUpStockButtonClicked(){
+    const auto name = nameUpStockEdit->text().toStdString();
+    const auto stock = stockUpStockEdit->text().toInt();
+    tableModel->updateStock(name, stock);
+}
+
+void MainWindow::handleUpSoldButtonClicked(){
+    const auto name = nameUpSoldEdit->text().toStdString();
+    const auto sold = soldUpSoldEdit->text().toInt();
+    tableModel->updateSold(name, sold);
 }
 
 void MainWindow::createTableView(){
@@ -88,7 +108,7 @@ QVBoxLayout* MainWindow::createAddLayout(){
 }
 
 QVBoxLayout* MainWindow::createRemoveLayout(){
-    QVBoxLayout* remove_form_layout = new QVBoxLayout;
+    QVBoxLayout *remove_form_layout = new QVBoxLayout;
     remove_form_layout->addWidget(new QLabel("Remove Product", this));
     QFormLayout *formLayout = new QFormLayout(this);
 
@@ -101,4 +121,40 @@ QVBoxLayout* MainWindow::createRemoveLayout(){
     remove_form_layout->addWidget(removeButton);
 
     return remove_form_layout;
+}
+
+QVBoxLayout* MainWindow::createUpStockLayout(){
+    QVBoxLayout *update_stock_layout = new QVBoxLayout;
+    update_stock_layout->addWidget(new QLabel("Update Stock", this));
+    QFormLayout *formLayout = new QFormLayout(this);
+
+    nameUpStockEdit = new QLineEdit(this);
+    stockUpStockEdit = new QLineEdit(this);
+
+    formLayout->addRow(tr("&Name:"), nameUpStockEdit);
+    formLayout->addRow(tr("&Stock Amount:"), stockUpStockEdit);
+
+    update_stock_layout->addLayout(formLayout);
+    upStockButton = new QPushButton("Update", this);
+    update_stock_layout->addWidget(upStockButton);
+
+    return update_stock_layout;
+}
+
+QVBoxLayout* MainWindow::createUpSoldLayout(){
+    QVBoxLayout *update_sold_layout = new QVBoxLayout;
+    update_sold_layout->addWidget(new QLabel("Update Sold", this));
+    QFormLayout *formLayout = new QFormLayout(this);
+
+    nameUpSoldEdit = new QLineEdit(this);
+    soldUpSoldEdit = new QLineEdit(this);
+
+    formLayout->addRow(tr("&Name:"), nameUpSoldEdit);
+    formLayout->addRow(tr("&Sold Amount:"), soldUpSoldEdit);
+
+    update_sold_layout->addLayout(formLayout);
+    upSoldButton = new QPushButton("Update", this);
+    update_sold_layout->addWidget(upSoldButton);
+
+    return update_sold_layout;
 }
