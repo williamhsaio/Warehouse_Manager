@@ -33,12 +33,16 @@ private:
     Ui::MainWindow *ui;
     QTableView *tableView;
     TableModel *tableModel;
+
     QLineEdit *nameLineEdit;
     QLineEdit *nameRemoveEdit;
     QLineEdit *locLineEdit;
     QLineEdit *stockLineEdit;
     QLineEdit *soldLineEdit;
+    QLineEdit *nameUpStockEdit;
+    QlineEdit *nameUpSoldEdit;
     QPushButton *addButton;
     QPushButton *removeButton;
+
 };
 #endif // MAINWINDOW_H
