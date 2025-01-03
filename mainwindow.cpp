@@ -9,6 +9,11 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
+#include <QString>
+#include <QFile>
+#include <QCoreApplication>
+
+using namespace std;
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -79,9 +84,10 @@ void MainWindow::handleUpSoldButtonClicked(){
 void MainWindow::createTableView(){
     tableView = new QTableView(this);
     tableModel = new TableModel(this);
-    tableModel->addProduct("Shovel", "A1", 200, 34);
+    /*tableModel->addProduct("Shovel", "A1", 200, 34);
     tableModel->addProduct("spade", "B1", 133, 34);
     tableModel->addProduct("axe", "C2", 300, 34);
+    */
     tableView->setModel(tableModel);
 }
 

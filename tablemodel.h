@@ -17,6 +17,12 @@ public:
         INVALD_VAL,
         NOT_FOUND
     };
+    enum class FileErrors{
+        SUCCESS,
+        FILE_NOT_OPEN,
+        FILE_WRITE_FAIL,
+        FILE_READ_FAIL
+    };
 
     enum Columns{
         PRODUCT_NAME,
@@ -41,6 +47,9 @@ public:
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+
+    FileErrors saveData();
+    FileErrors loadData();
 
     //Getters & Setters
     vector<Product*> getTable() const{

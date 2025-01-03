@@ -53,6 +53,5 @@ private:
     QPushButton *removeButton;
     QPushButton *upStockButton;
     QPushButton *upSoldButton;
-
 };
 #endif // MAINWINDOW_H

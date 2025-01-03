@@ -1,11 +1,18 @@
 #include "tablemodel.h"
+
 #include <algorithm>
 #include <iostream>
-#include <iterator>
+#include <QFile>
+#include <QJsonObject>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonParseError>
 
 using namespace std;
 
-TableModel::TableModel(QObject *parent) : QAbstractTableModel(parent){}
+TableModel::TableModel(QObject *parent) : QAbstractTableModel(parent){
+    loadData();
+}
 
 TableModel::~TableModel(){
     while(!m_table.empty()){
@@ -53,6 +60,7 @@ TableModel::Errors TableModel::updateStock(const string &name, int stock){
         QModelIndex bottomRight = index(rowCount()-1, columnCount()-1 );
 
         emit dataChanged(topLeft, bottomRight);
+        saveData();
         return Errors::SUCCESS;
     }
     else{
@@ -84,6 +92,7 @@ TableModel::Errors TableModel::updateSold(const string &name, int sold){
         QModelIndex bottomRight = index(rowCount()-1, columnCount()-1 );
 
         emit dataChanged(topLeft, bottomRight);
+        saveData();
         return Errors::SUCCESS;
     }
     else{
@@ -113,6 +122,7 @@ TableModel::Errors TableModel::addProduct(const string &name, const string &loca
         }
 
         endInsertRows();
+        saveData();
         return Errors::SUCCESS;
     }
 }
@@ -133,12 +143,68 @@ TableModel::Errors TableModel::removeProduct(const string &name){
         cout<<"Finished remove."<<endl;
 
         cout<<"Deleted pointers."<<endl;
+        saveData();
         return Errors::SUCCESS;
     }
     else{
         cout<<"Could not find the product."<<endl;
         return Errors::FAIL_TO_DELETE;
     }
+}
+TableModel::FileErrors TableModel::saveData(){
+    vector<Product*> table = getTable();
+    QFile tableFile("tableData.json");
+    //QFileInfo info(tableFile);
+    //cout << "Path is: " << info.absoluteFilePath().toStdString() <<endl;
+    QJsonDocument doc;
+    QJsonArray arr;
+
+    for(auto product: table){
+        QJsonObject obj;
+        obj["name"] = QString::fromStdString(product->getName());
+        obj["loc"] = QString::fromStdString(product->getLoc());
+        obj["stock"] = product->getStock();
+        obj["sold"] = product->getSold();
+
+        arr.append(obj);
+    }
+    doc.setArray(arr);
+    QByteArray dataJson = doc.toJson();
+    //cout<<"Pointer to data in byte array: " << dataJson.data()<<endl;
+
+    if(tableFile.open(QIODevice::WriteOnly | QIODevice::Truncate)){
+        tableFile.write(dataJson);
+        tableFile.close();
+        return FileErrors::SUCCESS;
+    }
+    else{
+        qDebug()<<"Could not open the file." << tableFile.errorString();
+        return FileErrors::FILE_NOT_OPEN;
+    }
+}
+
+TableModel::FileErrors TableModel::loadData(){
+    QFile tableFile("tableData.json");
+    if(!tableFile.open(QIODevice::ReadOnly | QIODevice::Text)){
+        qDebug()<<"Could not open file." << tableFile.errorString();
+        return FileErrors::FILE_NOT_OPEN;
+    }
+    QByteArray data = tableFile.readAll();
+    tableFile.close();
+
+    QJsonDocument doc = QJsonDocument::fromJson(data);
+    QJsonArray arr = doc.array();
+
+    for(const auto &val: arr){
+        QJsonObject obj = val.toObject();
+        string name = obj["name"].toString().toStdString();
+        string loc = obj["loc"].toString().toStdString();
+        int stock = obj["stock"].toInt();
+        int sold = obj["sold"].toInt();
+        addProduct(name, loc, stock, sold);
+    }
+
+    return FileErrors::SUCCESS;
 }
 
 Product* TableModel::getProduct(const string& name) const{
