@@ -8,6 +8,10 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
+    auto font = a.font();
+    font.setPixelSize(24);
+    a.setFont(font);
+
     QTranslator translator;
     const QStringList uiLanguages = QLocale::system().uiLanguages();
     for (const QString &locale : uiLanguages) {
@@ -18,7 +22,7 @@ int main(int argc, char *argv[])
         }
     }
     MainWindow w;
-    w.resize(560, 680);
+    w.resize(900, 680);
     w.show();
     return a.exec();
 }

@@ -84,11 +84,16 @@ void MainWindow::handleUpSoldButtonClicked(){
 void MainWindow::createTableView(){
     tableView = new QTableView(this);
     tableModel = new TableModel(this);
+
     /*tableModel->addProduct("Shovel", "A1", 200, 34);
     tableModel->addProduct("spade", "B1", 133, 34);
     tableModel->addProduct("axe", "C2", 300, 34);
     */
     tableView->setModel(tableModel);
+    for(int i =0; i<tableModel->columnCount(); i++){
+        tableView->setColumnWidth(i, 200);
+    }
+    //tableView->resizeColumnsToContents();
 }
 
 QVBoxLayout* MainWindow::createAddLayout(){
